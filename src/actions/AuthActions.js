@@ -1,5 +1,6 @@
-import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_USER, LOGIN_USER_FAIL, LOGIN_USER_SUCCESS } from "./types";
+import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_USER, LOGIN_USER_FAIL, LOGIN_USER_SUCCESS, LOGOUT_USER } from "./types";
 import * as firebase from "firebase";
+import { Alert } from "react-native";
 
 export const onEmailChange = email => {
     return {
@@ -49,4 +50,17 @@ const loginUserSuccess = (dispatch, user, props) => {
 
 const loginUserFail = dispatch => {
     dispatch({ type: LOGIN_USER_FAIL })
+}
+
+export const logoutUser = navigation => dispatch => {
+    firebase
+        .auth()
+        .signOut()
+        .then(() => {
+            dispatch({
+                type: LOGOUT_USER
+            })
+            navigation.navigate("Login");
+        })
+        .catch(() => { Alert.alert("Failed") })
 }

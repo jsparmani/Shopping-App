@@ -116,3 +116,6 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, { onEmailChange, onPasswordChange, loginUser })(LoginScreen)
+
+
+

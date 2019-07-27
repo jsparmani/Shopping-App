@@ -1,8 +1,17 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Platform, StatusBar, Text } from 'react-native'
 import { Container, Header, Title, Left, Icon, Right, Button, Body } from "native-base";
+import { connect } from "react-redux";
+import { logoutUser } from "../src/actions";
 
-export default class SettingsScreen extends Component {
+class SettingsScreen extends Component {
+
+    onButtonPress = () => {
+
+        const { navigation } = this.props
+
+        this.props.logoutUser(navigation);
+    }
 
     renderNotch = () => {
         if (Platform.OS === "android") {
@@ -33,10 +42,11 @@ export default class SettingsScreen extends Component {
 
                 </Header>
                 <View style={{ margin: 20 }}>
-                    <Button 
+                    <Button
                         light
                         danger
                         block
+                        onPress={this.onButtonPress}
                     >
                         <Icon name='md-exit' style={{ color: "#FFFFFF" }} />
                         <Text style={{ fontSize: 20, color: "#FFFFFF" }}>Logout</Text>
@@ -46,6 +56,8 @@ export default class SettingsScreen extends Component {
         )
     }
 }
+
+export default connect(null, { logoutUser })(SettingsScreen)
 
 const styles = StyleSheet.create({
     container: {
