@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, StatusBar, ActivityIndicator, StyleSheet } from 'react-native';
-import { Form, Input, Item, Label, Button } from "native-base";
+import {
+    StyleSheet, Text, View, Image,
+    TouchableWithoutFeedback, StatusBar,
+    TextInput, SafeAreaView, Keyboard, TouchableOpacity,
+    KeyboardAvoidingView, ActivityIndicator
+} from 'react-native'
 import { connect } from "react-redux";
 import * as firebase from "firebase";
 import AnimatedLoader from 'react-native-animated-loader';
@@ -43,12 +47,9 @@ class LoginScreen extends Component {
 
         return (
 
-            <Button
-                style={{ margin: 10, justifyContent: "center", alignItems: "center" }}
-                onPress={this.onButtonPress}
-            >
-                <Text style={{ color: "#FFFFFF" }}> Submit </Text>
-            </Button>
+            <TouchableOpacity style={styles.buttonContainer} onPress={this.onButtonPress}>
+                <Text style={styles.buttonText}>SIGN IN</Text>
+            </TouchableOpacity>
         )
     }
 
@@ -65,44 +66,102 @@ class LoginScreen extends Component {
         }
 
         return (
-            <View>
-                <View style={{ paddingTop: StatusBar.currentHeight, backgroundColor: "#000" }} />
-                <Text style={{ fontSize: 35 }}>Welcome to Shopping App </Text>
-
-                <Form>
-                    <Item floatingLabel>
-                        <Label>Email</Label>
-                        <Input
-                            value={this.props.email}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            keyboardType="email-address"
-                            onChangeText={text => { this.props.onEmailChange(text) }}
-                        />
-                    </Item>
-                    <Item floatingLabel last>
-                        <Label>Password</Label>
-                        <Input
-                            value={this.props.password}
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            onChangeText={text => { this.props.onPasswordChange(text) }}
-                            secureTextEntry
-                        />
-                    </Item>
-                </Form>
-                <View style={{ justifyContent: "center", alignItems: "center", margin: 10 }}>
-                    <Text style={{ fontSize: 20, color: "red" }}> {this.props.error} </Text>
-                </View>
-                {this.renderButton()}
-            </View>
+            <SafeAreaView style={styles.container}>
+                <StatusBar barStyle="light-content" />
+                <KeyboardAvoidingView behavior='padding' style={styles.container}>
+                    <TouchableWithoutFeedback style={styles.container}
+                        onPress={Keyboard.dismiss}>
+                        <View style={styles.logoContainer}>
+                            <View style={styles.logoContainer}>
+                                <Image style={styles.logo}
+                                    source={require('../assets/login_screen_image.png')}>
+                                </Image>
+                                <Text style={styles.title}>Account Information</Text>
+                            </View>
+                            <View style={styles.infoContainer}>
+                                <TextInput style={styles.input}
+                                    placeholder="Enter username/email"
+                                    placeholderTextColor='rgba(255,255,255,0.8)'
+                                    keyboardType='email-address'
+                                    returnKeyType='next'
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    value={this.props.email}
+                                    onChangeText={text => this.props.onEmailChange(text)}
+                                    onSubmitEditing={() => this.refs.txtPassword.focus()}
+                                />
+                                <TextInput style={styles.input}
+                                    onChangeText={text => this.props.onPasswordChange(text)}
+                                    value={this.props.password}
+                                    placeholder="Enter password"
+                                    placeholderTextColor='rgba(255,255,255,0.8)'
+                                    returnKeyType='go'
+                                    secureTextEntry
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    ref={"txtPassword"}
+                                />
+                                <View>
+                                    {this.renderButton()}
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5FCFF', },
-    lottie: { width: 100, height: 100,  backfaceVisibility:'hidden'}
+    container: {
+        flex: 1,
+        backgroundColor: 'rgb(32, 53, 70)',
+        flexDirection: 'column',
+    },
+    lottie: { width: 100, height: 100, backfaceVisibility: 'hidden' },
+    logoContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1
+    },
+    logo: {
+        width: 128,
+        height: 56,
+    },
+    title: {
+        color: '#f7c744',
+        fontSize: 18,
+        textAlign: 'center',
+        marginTop: 5,
+        opacity: 0.9
+    },
+    infoContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: 200,
+        padding: 20,
+        // backgroundColor: 'red'
+    },
+    input: {
+        height: 40,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        color: '#FFF',
+        marginBottom: 20,
+        paddingHorizontal: 10
+    },
+    buttonContainer: {
+        backgroundColor: '#f7c744',
+        paddingVertical: 15
+    },
+    buttonText: {
+        textAlign: 'center',
+        color: 'rgb(32, 53, 70)',
+        fontWeight: 'bold',
+        fontSize: 18
+    }
 })
 
 const mapStateToProps = state => {
@@ -116,6 +175,3 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, { onEmailChange, onPasswordChange, loginUser })(LoginScreen)
-
-
-
