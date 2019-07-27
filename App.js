@@ -7,6 +7,8 @@ import reducers from "./src/reducers";
 import * as firebase from "firebase";
 import thunk from "redux-thunk";
 
+console.disableYellowBox = true; 
+
 export default class App extends Component {
 
     componentWillMount() {

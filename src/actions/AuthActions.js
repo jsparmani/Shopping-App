@@ -44,6 +44,26 @@ const loginUserSuccess = (dispatch, user, props) => {
         payload: user
     })
 
+    const { currentUser } = firebase.auth()
+    firebase
+        .database()
+        .ref(`admin-users/${currentUser.uid}`)
+        .on('value', snapshot => {
+            if(!snapshot.val()) {
+                firebase
+                    .database()
+                    .ref(`normal-users/${currentUser.uid}`)
+                    .set({
+                        email: currentUser.email
+                    })
+            }
+        })
+
+
+        firebase
+            .database()
+            .ref(`admin-users/${currentUser.uid}`).off()
+
     props.navigation.navigate("Home")
 
 }
