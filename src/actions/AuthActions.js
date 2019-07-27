@@ -15,7 +15,7 @@ export const onPasswordChange = password => {
     }
 }
 
-export const loginUser = ({ email, password }) => {
+export const loginUser = ({ email, password }, props) => {
 
     return dispatch => {
 
@@ -24,12 +24,12 @@ export const loginUser = ({ email, password }) => {
         firebase
             .auth()
             .signInWithEmailAndPassword(email, password)
-            .then(user => loginUserSuccess(dispatch, user))
+            .then(user => loginUserSuccess(dispatch, user, props))
             .catch(() => {
                 firebase
                     .auth()
                     .createUserWithEmailAndPassword(email, password)
-                    .then(user => loginUserSuccess(dispatch, user))
+                    .then(user => loginUserSuccess(dispatch, user, props))
                     .catch(() => loginUserFail(dispatch))
             })
     }
@@ -37,11 +37,14 @@ export const loginUser = ({ email, password }) => {
 }
 
 
-const loginUserSuccess = (dispatch, user) => {
+const loginUserSuccess = (dispatch, user, props) => {
     dispatch({
         type: LOGIN_USER_SUCCESS,
         payload: user
     })
+
+    props.navigation.navigate("Home")
+
 }
 
 const loginUserFail = dispatch => {

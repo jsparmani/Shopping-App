@@ -47,6 +47,7 @@ export default class SideBar extends React.Component {
                         renderRow={data => {
                             return (
                                 <ListItem
+                                
                                     button
                                     onPress={() => this.props.navigation.navigate(data)}
                                 >

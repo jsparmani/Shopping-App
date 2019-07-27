@@ -1,5 +1,6 @@
 import { SEARCH_TEXT_CHANGED } from "../actions/types";
 
+
 const INITIAL_STATE = {
     text: ""
 }

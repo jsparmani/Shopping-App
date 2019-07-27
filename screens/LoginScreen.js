@@ -1,15 +1,36 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { Text, View, StatusBar, ActivityIndicator } from 'react-native';
 import { Form, Input, Item, Label, Button } from "native-base";
-import * as firebase from "firebase";
 import { connect } from "react-redux";
+import * as firebase from "firebase";
 import { onEmailChange, onPasswordChange, loginUser } from '../src/actions'
 
 class LoginScreen extends Component {
 
+    static navigationOptions = {
+        drawerLockMode: 'locked-closed'
+    }
+
+    state = {
+        isLoading: true
+    }
+
+    componentWillMount() {
+        firebase
+            .auth()
+            .onAuthStateChanged(user => {
+                if (user) {
+                    this.setState({ isLoading: true })
+                    this.props.navigation.navigate("Home");
+                } else {
+                    this.setState({ isLoading: false })
+                }
+            })
+    }
+
     onButtonPress = () => {
         const { email, password } = this.props;
-        this.props.loginUser({ email, password });
+        this.props.loginUser({ email, password }, this.props);
     }
 
     renderButton = () => {
@@ -20,6 +41,7 @@ class LoginScreen extends Component {
         }
 
         return (
+
             <Button
                 style={{ margin: 10, justifyContent: "center", alignItems: "center" }}
                 onPress={this.onButtonPress}
@@ -30,6 +52,17 @@ class LoginScreen extends Component {
     }
 
     render() {
+
+        if (this.state.isLoading) {
+            return (
+                <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }} >
+                    <ActivityIndicator
+                        size="large"
+                    />
+                </View>
+            )
+        }
+
         return (
             <View>
                 <View style={{ paddingTop: StatusBar.currentHeight, backgroundColor: "#000" }} />
@@ -49,7 +82,7 @@ class LoginScreen extends Component {
                     <Item floatingLabel last>
                         <Label>Password</Label>
                         <Input
-                            value={this.props.pass}
+                            value={this.props.password}
                             autoCorrect={false}
                             autoCapitalize="none"
                             onChangeText={text => { this.props.onPasswordChange(text) }}
@@ -69,9 +102,10 @@ class LoginScreen extends Component {
 const mapStateToProps = state => {
     return {
         email: state.auth.email,
-        pass: state.auth.password,
+        password: state.auth.password,
         error: state.auth.error,
-        loading: state.auth.loading
+        loading: state.auth.loading,
+        user: state.auth.user
     }
 }
 
