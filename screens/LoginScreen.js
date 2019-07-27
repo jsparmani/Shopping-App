@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, StatusBar, ActivityIndicator } from 'react-native';
+import { Text, View, StatusBar, ActivityIndicator, StyleSheet } from 'react-native';
 import { Form, Input, Item, Label, Button } from "native-base";
 import { connect } from "react-redux";
 import * as firebase from "firebase";
+import AnimatedLoader from 'react-native-animated-loader';
 import { onEmailChange, onPasswordChange, loginUser } from '../src/actions'
 
 class LoginScreen extends Component {
@@ -20,7 +21,7 @@ class LoginScreen extends Component {
             .auth()
             .onAuthStateChanged(user => {
                 if (user) {
-                    this.setState({ isLoading: true })
+                    this.setState({ isLoading: false })
                     this.props.navigation.navigate("Home");
                 } else {
                     this.setState({ isLoading: false })
@@ -55,11 +56,11 @@ class LoginScreen extends Component {
 
         if (this.state.isLoading) {
             return (
-                <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }} >
-                    <ActivityIndicator
-                        size="large"
-                    />
+
+                <View style={styles.container}>
+                    <AnimatedLoader visible={this.state.isLoading} overlayColor="rgba(255,255,255,0.75)" speed={1} source={require("../assets/8030-faer-raund.json")} animationStyle={styles.lottie} />
                 </View>
+
             )
         }
 
@@ -98,6 +99,11 @@ class LoginScreen extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5FCFF', },
+    lottie: { width: 100, height: 100,  backfaceVisibility:'hidden'}
+})
 
 const mapStateToProps = state => {
     return {
