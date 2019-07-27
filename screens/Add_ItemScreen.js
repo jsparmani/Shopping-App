@@ -1,9 +1,18 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Platform, StatusBar, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Keyboard, Image } from 'react-native';
+import { Text, View, StyleSheet, Platform, StatusBar, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Keyboard, Image, ActivityIndicator } from 'react-native';
 import { Container, Header, Title, Left, Icon, Right, Button, Body, Item, Input, Form, Textarea, Label } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import * as firebase from "firebase";
 import uuid from "uuid";
+
+INITIAL_STATE = {
+    name: "",
+    price: "",
+    description: "",
+    image: "empty",
+    imageDownloadUrl: "empty",
+    isUploading: false
+}
 
 export default class Add_ItemScreen extends Component {
 
@@ -34,11 +43,11 @@ export default class Add_ItemScreen extends Component {
 
             if (image !== "empty") {
                 const imageUrl = await this.uploadImageAsync(image, storageRef);
-                // console.log(imageUrl);
+
                 this.setState({ imageDownloadUrl: imageUrl })
             }
 
-            console.log(this.state.imageDownloadUrl);
+
 
             let product = {
                 name: name,
@@ -57,6 +66,8 @@ export default class Add_ItemScreen extends Component {
             })
 
         }
+
+        this.setState({ ...INITIAL_STATE });
     };
 
     uploadImageAsync = async (uri, storageRef) => {
@@ -87,7 +98,7 @@ export default class Add_ItemScreen extends Component {
         const imgUrl = await snapshot.ref.getDownloadURL()
             .then(url => {
                 const downloadUrl = url;
-                
+
                 return downloadUrl
             })
         return imgUrl
@@ -115,6 +126,20 @@ export default class Add_ItemScreen extends Component {
     }
 
     render() {
+
+        if (this.state.isUploading) {
+            return (
+                <View
+                    style={{ flex: 1, alignContent: "center", justifyContent: "center" }}
+                >
+                    <ActivityIndicator size="large" color="#B83227" />
+                    <Text style={{ textAlign: "center" }}>
+                        Product Uploading please wait..
+                    </Text>
+                </View>
+            );
+        }
+
         return (
             <Container>
                 {this.renderNotch()}

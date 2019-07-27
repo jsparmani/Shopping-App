@@ -27,7 +27,7 @@ const HomeScreenRouter = createDrawerNavigator(
         Settings: { screen: SettingsScreen }
     },
     {
-        initialRouteName: "Add_Item",
+        initialRouteName: "Login",
         contentComponent: props => <SideBar {...props} />
     }
 );
