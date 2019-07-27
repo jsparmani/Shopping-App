@@ -7,7 +7,7 @@ import reducers from "./src/reducers";
 import * as firebase from "firebase";
 import thunk from "redux-thunk";
 
-console.disableYellowBox = true; 
+console.disableYellowBox = true;
 
 export default class App extends Component {
 
@@ -17,7 +17,7 @@ export default class App extends Component {
             authDomain: "shopping-app-bd7b4.firebaseapp.com",
             databaseURL: "https://shopping-app-bd7b4.firebaseio.com",
             projectId: "shopping-app-bd7b4",
-            storageBucket: "",
+            storageBucket: "shopping-app-bd7b4.appspot.com",
             messagingSenderId: "751192903089",
             appId: "1:751192903089:web:93a589bf95e895c5"
         };
