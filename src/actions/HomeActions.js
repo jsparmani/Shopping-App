@@ -1,4 +1,5 @@
-import { SEARCH_TEXT_CHANGED, USER_CHECK } from "./types";
+import { SEARCH_TEXT_CHANGED, USER_CHECK, ADD_PRODUCT } from "./types";
+import * as firebase from "firebase";
 
 export const searchChange = text => {
     return {
@@ -13,3 +14,4 @@ export const userCheck = (user, uid, email) => {
         payload: { user, uid, email }
     }
 }
+

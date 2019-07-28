@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, Platform, StatusBar, TouchableOpacity, ActivityIndicator, FlatList, Image, ScrollView, Alert } from 'react-native';
 import { connect } from "react-redux";
-import { Container, Header, Title, Left, Icon, Right, Button, Body, Item, Input, Card } from "native-base";
+import { Header, Title, Left, Icon, Right, Button, Body, Item, Input, Card } from "native-base";
 import { searchChange } from "../../src/actions";
 import * as firebase from "firebase";
 import { Entypo } from "@expo/vector-icons";
-
 
 class HomeScreen extends Component {
 
@@ -112,7 +111,35 @@ class HomeScreen extends Component {
         }
     }
 
-    renderSelector = () => {
+    addProductToCart = async key => {
+
+        firebase
+            .database()
+            .ref(`products/${key}`)
+            .on('value', snapshot => {
+                if (snapshot.val()) {
+                    let product = snapshot.val()
+                    let ref = firebase.database().ref(`cart/${this.props.uid}/products`).child(key)
+                    ref.once('value', snapshot => {
+                        if (snapshot.val()) {
+                            let existingProduct = snapshot.val()
+                            let q = existingProduct.quantity
+                            existingProduct["quantity"] = q + 1
+                            ref.update(existingProduct)
+                        } else {
+                            product["quantity"] = 1
+                            ref.update(product)
+                        }
+                    })
+
+
+                }
+            })
+
+        ref.off()
+    }
+
+    renderSelector = key => {
         if (this.props.isAdmin) {
             return (
                 <TouchableOpacity onPress={() => { Alert.alert("Cross Pressed") }}>
@@ -121,14 +148,13 @@ class HomeScreen extends Component {
             )
         } else {
             return (
-                <TouchableOpacity onPress={() => { Alert.alert("Plus Pressed") }}>
+                <TouchableOpacity onPress={() => { this.addProductToCart(key) }}>
                     <Entypo style={{ marginTop: 35, paddingRight: 10 }} name="plus" size={25} />
                 </TouchableOpacity>
 
             )
         }
     }
-
 
     render() {
 
@@ -198,7 +224,7 @@ class HomeScreen extends Component {
 
                     </Header>
                 </View>
-                <View style={{ flex: 10 }}>
+                <View style={{ flex: 9 }}>
                     <ScrollView>
                         <FlatList
                             ListHeaderComponent={this.renderHeader()}
@@ -226,7 +252,7 @@ class HomeScreen extends Component {
                                                 <Text style={styles.infoText}>{item.price}</Text>
                                             </View>
                                             <View style={styles.entypoContainer}>
-                                                {this.renderSelector()}
+                                                {this.renderSelector(item.key)}
                                             </View>
                                         </Card>
                                     </TouchableOpacity>
@@ -244,7 +270,8 @@ class HomeScreen extends Component {
 const mapStateToProps = state => {
     return {
         searchText: state.home.text,
-        isAdmin: state.home.isAdmin
+        isAdmin: state.home.isAdmin,
+        uid: state.home.uid
     }
 }
 
