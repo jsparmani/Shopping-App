@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Platform, StatusBar, ActivityIndicator, FlatList, Image, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Platform, StatusBar, ActivityIndicator, FlatList, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Header, Title, Left, Icon, Right, Button, Body, Card } from "native-base";
 import { connect } from "react-redux";
 import * as firebase from "firebase";
+import { Entypo } from "@expo/vector-icons";
 
 class CartScreen extends Component {
 
@@ -52,6 +53,25 @@ class CartScreen extends Component {
                 <View style={styles.notch} />
             )
         }
+    }
+
+    changeQuantity = key => {
+        ref = firebase.database().ref(`cart/${this.props.uid}/products/${key}`)
+        ref.once("value", snapshot => {
+            if (snapshot.val()) {
+                let product = snapshot.val()
+                let q = product.quantity
+                if (q === 1) {
+                    ref.remove()
+                } else {
+                    product["quantity"] = q - 1;
+                    ref.update(product)
+                }
+                ref.off()
+            }
+        })
+
+
     }
 
     render() {
@@ -141,6 +161,14 @@ class CartScreen extends Component {
                                                 {item.name}
                                             </Text>
                                             <Text style={styles.infoText}>{item.price}</Text>
+                                            <Text style={styles.infoText}> Quantity: {item.quantity} </Text>
+                                        </View>
+                                        <View style={styles.entypoContainer}>
+                                            <TouchableOpacity
+                                                onPress={() => this.changeQuantity(item.key)}
+                                            >
+                                                <Entypo style={{ marginTop: 35, paddingRight: 10 }} name="circle-with-minus" size={25} />
+                                            </TouchableOpacity>
                                         </View>
                                     </Card>
 
