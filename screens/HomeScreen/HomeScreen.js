@@ -41,6 +41,7 @@ class HomeScreen extends Component {
                         productResult[key]["key"] = value;
                     })
 
+
                     self.setState({ isListEmpty: false, data: productResult, arrayHolder: productResult })
                 } else {
                     self.setState({ isListEmpty: true })
@@ -119,7 +120,12 @@ class HomeScreen extends Component {
                 </TouchableOpacity>
             )
         } else {
-            return <Entypo style={{ marginTop: 35, paddingRight: 10 }} name="plus" size={25} />;
+            return (
+                <TouchableOpacity onPress={() => { Alert.alert("Plus Pressed") }}>
+                    <Entypo style={{ marginTop: 35, paddingRight: 10 }} name="plus" size={25} />
+                </TouchableOpacity>
+
+            )
         }
     }
 
@@ -200,7 +206,7 @@ class HomeScreen extends Component {
                             renderItem={({ item }) => {
                                 return (
                                     <TouchableOpacity
-                                        onPress={() => { }}
+                                        onPress={() => { this.props.navigation.navigate("Description", { key: item.key }) }}
                                     >
                                         <Card style={styles.listItem}>
                                             <View>

@@ -7,11 +7,13 @@ import Add_ItemScreen from "../Add_ItemScreen";
 import SideBar from "../Sidebar.js";
 import { createDrawerNavigator, createAppContainer, createStackNavigator } from "react-navigation";
 import CartScreen from "../CartScreen.js";
+import ProductDescriptionScreen from "../ProductDescriptionScreen.js";
 
 const HomeStack = createStackNavigator(
     {
         Home: { screen: HomeScreen },
-        Cart: { screen: CartScreen }
+        Cart: { screen: CartScreen },
+        Description: { screen: ProductDescriptionScreen }
     },
     {
         headerMode: "none"

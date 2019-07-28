@@ -5045,6 +5045,11 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-modal-image@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/react-modal-image/-/react-modal-image-2.4.0.tgz#43fa76c7085995a6546d53a5d6ba0d6a1a303e5f"
+  integrity sha512-FvOHFgrBw8Ym5NY0iVBj6ddtFrADUJAJGBeMf5rKX2mpxPHuknkasmkzuVXMh0Jf2GSTW0GCLeTON6yX4ySVKQ==
+
 react-native-animated-loader@^0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/react-native-animated-loader/-/react-native-animated-loader-0.0.7.tgz#a5b8a4fc38ecae418693dc1bd9ffaac9528b82c6"
