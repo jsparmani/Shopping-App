@@ -20,6 +20,7 @@ class LoginScreen extends Component {
         isLoading: true
     }
 
+
     componentWillMount() {
         firebase
             .auth()
@@ -31,6 +32,17 @@ class LoginScreen extends Component {
                     this.setState({ isLoading: false })
                 }
             })
+
+        const { navigation } = this.props
+        navigation.addListener("willFocus", () => {
+            firebase
+                .auth()
+                .onAuthStateChanged(user => {
+                    if (user) {
+                        this.props.navigation.navigate("Home");
+                    }
+                })
+        })
     }
 
     onButtonPress = () => {

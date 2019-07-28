@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Platform, StatusBar, TouchableOpacity, ActivityIndicator, FlatList, Image, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Platform, StatusBar, TouchableOpacity, ActivityIndicator, FlatList, Image, ScrollView, Alert } from 'react-native';
 import { connect } from "react-redux";
 import { Container, Header, Title, Left, Icon, Right, Button, Body, Item, Input, Card } from "native-base";
 import { searchChange } from "../../src/actions";
 import * as firebase from "firebase";
+import { Entypo } from "@expo/vector-icons";
 
 
 class HomeScreen extends Component {
@@ -69,6 +70,7 @@ class HomeScreen extends Component {
             return itemData.indexOf(textData) > -1;
         });
 
+
         this.setState({ arrayHolder: newData });
     }
 
@@ -109,10 +111,21 @@ class HomeScreen extends Component {
         }
     }
 
+    renderSelector = () => {
+        if (this.props.isAdmin) {
+            return (
+                <TouchableOpacity onPress={() => { Alert.alert("Cross Pressed") }}>
+                    <Entypo style={{ marginTop: 35, paddingRight: 10 }} name="cross" size={25} />
+                </TouchableOpacity>
+            )
+        } else {
+            return <Entypo style={{ marginTop: 35, paddingRight: 10 }} name="plus" size={25} />;
+        }
+    }
+
 
     render() {
 
-        console.log(this.props.isAdmin)
 
         if (this.state.isLoading) {
             return (
@@ -206,6 +219,9 @@ class HomeScreen extends Component {
                                                 </Text>
                                                 <Text style={styles.infoText}>{item.price}</Text>
                                             </View>
+                                            <View style={styles.entypoContainer}>
+                                                {this.renderSelector()}
+                                            </View>
                                         </Card>
                                     </TouchableOpacity>
                                 );
@@ -263,6 +279,11 @@ const styles = StyleSheet.create({
         right: 10,
         height: 60,
         backgroundColor: "#B83227",
-        borderRadius: 100
+        borderRadius: 100,
+    },
+    entypoContainer: {
+        position: "absolute",
+        right: 0,
+        marginLeft: "auto",
     }
 })

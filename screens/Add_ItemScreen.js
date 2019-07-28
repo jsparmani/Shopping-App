@@ -119,7 +119,7 @@ export default class Add_ItemScreen extends Component {
         let result = await ImagePicker.launchImageLibraryAsync({
             quality: 0.2,
             base64: true,
-            allowEditing: true,
+            allowsEditing: true,
             aspect: [1, 1]
         });
         if (!result.cancelled) {

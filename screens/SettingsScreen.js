@@ -23,7 +23,6 @@ class SettingsScreen extends Component {
 
     render() {
 
-        console.log(this.props.isAdmin, this.props.email)
 
         return (
             <Container>
