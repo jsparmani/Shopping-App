@@ -5,20 +5,23 @@ import { Container, Header, Title, Left, Icon, Right, Button, Body, Item, Input,
 import { searchChange } from "../../src/actions";
 import * as firebase from "firebase";
 
+
 class HomeScreen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             data: [],
+            arrayHolder: [],
             isLoading: true,
-            isListEmpty: false
+            isListEmpty: false,
         };
     }
 
     componentWillMount() {
         this.getAllProducts()
     }
+
 
     getAllProducts = () => {
         let self = this;
@@ -30,14 +33,14 @@ class HomeScreen extends Component {
             .on("value", dataSnapshot => {
                 if (dataSnapshot.val()) {
                     let productResult = Object.values(dataSnapshot.val())
-                    console.log("ProductResult", productResult)
+
                     let productKey = Object.keys(dataSnapshot.val())
-                    console.log("ProductKey", productKey)
+
                     productKey.forEach((value, key) => {
                         productResult[key]["key"] = value;
                     })
 
-                    self.setState({ isListEmpty: false, data: productResult })
+                    self.setState({ isListEmpty: false, data: productResult, arrayHolder: productResult })
                 } else {
                     self.setState({ isListEmpty: true })
                 }
@@ -53,8 +56,64 @@ class HomeScreen extends Component {
         }
     }
 
+    searchFilterFunction = text => {
+
+        if (!text) {
+            this.setState({ arrayHolder: this.state.data })
+            return true;
+        }
+
+        const newData = this.state.data.filter(item => {
+            const itemData = `${item.name.toUpperCase()} ${item.description.toUpperCase()}`;
+            const textData = text.toUpperCase()
+            return itemData.indexOf(textData) > -1;
+        });
+
+        this.setState({ arrayHolder: newData });
+    }
+
+    renderHeader = () => {
+        return (
+            <View>
+                <Item style={{ padding: 10 }}>
+                    <Input
+                        placeholder="Search"
+                        value={this.props.searchText}
+                        autoCorrect={false}
+                        onChangeText={text => {
+                            this.props.searchChange(text);
+                            this.searchFilterFunction(text);
+                        }}
+                        style={{ margin: 5 }}
+                    />
+                    <TouchableOpacity>
+                        <Icon name="md-search" />
+                    </TouchableOpacity>
+                </Item>
+            </View>
+        )
+    }
+
+    renderCart = () => {
+        if (!this.props.isAdmin) {
+            return (
+                <Right>
+                    <Button
+                        transparent
+                        onPress={() => { this.props.navigation.navigate("Cart") }}
+                    >
+                        <Icon name='cart' />
+                    </Button>
+                </Right>
+            )
+        }
+    }
+
 
     render() {
+
+        console.log(this.props.isAdmin)
+
         if (this.state.isLoading) {
             return (
                 <View
@@ -70,7 +129,7 @@ class HomeScreen extends Component {
 
             return (
 
-                <Container>
+                <View style={{ flex: 1 }}>
                     {this.renderNotch()}
                     <Header
                         androidStatusBarColor="red"
@@ -85,111 +144,76 @@ class HomeScreen extends Component {
                         <Body>
                             <Title>Shopping App</Title>
                         </Body>
-                        <Right>
-                            <Button
-                                transparent
-                                onPress={() => { this.props.navigation.navigate("Cart") }}
-                            >
-                                <Icon name='cart' />
-                            </Button>
-                        </Right>
+                        {this.renderCart()}
 
                     </Header>
-                    <Item style={{ padding: 10 }}>
-                        <Input
-                            placeholder="Search"
-                            value={this.props.searchText}
-                            onChangeText={text => this.props.searchChange(text)}
-                            style={{ margin: 5 }}
-                        />
-                        <TouchableOpacity>
-                            <Icon name="md-search" />
-                        </TouchableOpacity>
-                    </Item>
                     <View
                         style={{ flex: 1, alignContent: "center", justifyContent: "center" }}
                     >
                         <Text style={{ textAlign: "center" }}>No Products Found!</Text>
                     </View>
-                </Container>
-
+                </View>
 
             );
         }
 
         return (
-            <Container>
-                {this.renderNotch()}
-                <Header
-                    androidStatusBarColor="red"
-                >
-                    <Left>
-                        <Button
-                            transparent
-                            onPress={() => this.props.navigation.openDrawer()}>
-                            <Icon name="menu" />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>Shopping App</Title>
-                    </Body>
-                    <Right>
-                        <Button
-                            transparent
-                            onPress={() => { this.props.navigation.navigate("Cart") }}
-                        >
-                            <Icon name='cart' />
-                        </Button>
-                    </Right>
+            <View style={{ flex: 1 }}>
+                <View style={{ flex: 1 }}>
+                    {this.renderNotch()}
+                    <Header
+                        androidStatusBarColor="red"
+                    >
+                        <Left>
+                            <Button
+                                transparent
+                                onPress={() => this.props.navigation.openDrawer()}>
+                                <Icon name="menu" />
+                            </Button>
+                        </Left>
+                        <Body>
+                            <Title>Shopping App</Title>
+                        </Body>
 
-                </Header>
-                <View>
-                    <Item style={{ padding: 10 }}>
-                        <Input
-                            placeholder="Search"
-                            value={this.props.searchText}
-                            onChangeText={text => this.props.searchChange(text)}
-                            style={{ margin: 5 }}
+                        {this.renderCart()}
+
+                    </Header>
+                </View>
+                <View style={{ flex: 10 }}>
+                    <ScrollView>
+                        <FlatList
+                            ListHeaderComponent={this.renderHeader()}
+                            data={this.state.arrayHolder}
+                            renderItem={({ item }) => {
+                                return (
+                                    <TouchableOpacity
+                                        onPress={() => { }}
+                                    >
+                                        <Card style={styles.listItem}>
+                                            <View>
+                                                <Image
+                                                    style={styles.contactIcon}
+                                                    source={
+                                                        item.imageUrl === "empty"
+                                                            ? require("../../assets/person.png")
+                                                            : { uri: item.imageUrl }
+                                                    }
+                                                />
+                                            </View>
+                                            <View style={styles.infoContainer}>
+                                                <Text style={styles.infoText}>
+                                                    {item.name}
+                                                </Text>
+                                                <Text style={styles.infoText}>{item.price}</Text>
+                                            </View>
+                                        </Card>
+                                    </TouchableOpacity>
+                                );
+                            }}
                         />
-                        <TouchableOpacity>
-                            <Icon name="md-search" />
-                        </TouchableOpacity>
-                    </Item>
+                    </ScrollView>
                 </View>
-                <View>
-                    <View>
-                            <FlatList
-                                data={this.state.data}
-                                renderItem={({ item }) => {
-                                    return (
-                                        <TouchableOpacity
-                                            onPress={() => { }}
-                                        >
-                                            <Card style={styles.listItem}>
-                                                <View>
-                                                    <Image
-                                                        style={styles.contactIcon}
-                                                        source={
-                                                            item.imageUrl === "empty"
-                                                                ? require("../../assets/person.png")
-                                                                : { uri: item.imageUrl }
-                                                        }
-                                                    />
-                                                </View>
-                                                <View style={styles.infoContainer}>
-                                                    <Text style={styles.infoText}>
-                                                        {item.name}
-                                                    </Text>
-                                                    <Text style={styles.infoText}>{item.price}</Text>
-                                                </View>
-                                            </Card>
-                                        </TouchableOpacity>
-                                    );
-                                }}
-                            />
-                    </View>
-                </View>
-            </Container>
+            </View>
 
         );
     }
@@ -198,6 +222,7 @@ class HomeScreen extends Component {
 const mapStateToProps = state => {
     return {
         searchText: state.home.text,
+        isAdmin: state.home.isAdmin
     }
 }
 

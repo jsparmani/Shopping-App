@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Platform, StatusBar, Text } from 'react-native'
-import { Container, Header, Title, Left, Icon, Right, Button, Body } from "native-base";
+import { Container, Header, Title, Left, Icon, Right, Button, Body, Card, CardItem, Content } from "native-base";
 import { connect } from "react-redux";
 import { logoutUser } from "../src/actions";
 
@@ -22,6 +22,9 @@ class SettingsScreen extends Component {
     }
 
     render() {
+
+        console.log(this.props.isAdmin, this.props.email)
+
         return (
             <Container>
                 {this.renderNotch()}
@@ -41,8 +44,22 @@ class SettingsScreen extends Component {
                     <Right />
 
                 </Header>
-                <View style={{ margin: 20 }}>
+
+                <Card>
+                    <CardItem>
+                        <Text>{this.props.email}</Text>
+                    </CardItem>
+                    <CardItem>
+                        <Body>
+                            <Text>
+                                {this.props.isAdmin === true ? "Admin" : "Star User"}
+                            </Text>
+                        </Body>
+                    </CardItem>
+                </Card>
+                <View>
                     <Button
+                        style={{ margin: 10 }}
                         light
                         danger
                         block
@@ -57,7 +74,14 @@ class SettingsScreen extends Component {
     }
 }
 
-export default connect(null, { logoutUser })(SettingsScreen)
+const mapStateToProps = state => {
+    return {
+        email: state.home.email,
+        isAdmin: state.home.isAdmin
+    }
+}
+
+export default connect(mapStateToProps, { logoutUser })(SettingsScreen)
 
 const styles = StyleSheet.create({
     container: {

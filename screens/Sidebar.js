@@ -10,9 +10,11 @@ import {
     Icon
 } from "native-base";
 import firebase from "firebase";
+import { connect } from "react-redux";
+import { userCheck } from "../src/actions";
 
 var routes = ["Home", "Orders", "Settings"];
-export default class SideBar extends React.Component {
+class SideBar extends React.Component {
 
     componentDidMount() {
 
@@ -26,9 +28,11 @@ export default class SideBar extends React.Component {
                         .on('value', snapshot => {
                             if (snapshot.val()) {
                                 routes = ["Home", "Add Item", "Settings"]
+                                this.props.userCheck(true, user.uid, user.email);
 
                             } else {
                                 routes = ["Home", "Orders", "Settings"]
+                                this.props.userCheck(false, user.uid, user.email);
                             }
                         })
 
@@ -89,3 +93,5 @@ export default class SideBar extends React.Component {
         );
     }
 }
+
+export default connect(null, { userCheck })(SideBar)

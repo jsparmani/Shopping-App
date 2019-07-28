@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Platform, StatusBar, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Keyboard, Image, ActivityIndicator } from 'react-native';
-import { Container, Header, Title, Left, Icon, Right, Button, Body, Item, Input, Form, Textarea, Label } from "native-base";
+import { Text, View, StyleSheet, Platform, StatusBar, TouchableOpacity, TouchableWithoutFeedback, ScrollView, Keyboard, Image, ActivityIndicator, Alert } from 'react-native';
+import { Container, Header, Title, Left, Icon, Button, Body, Item, Input, Form, Textarea, Label } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import * as firebase from "firebase";
 import uuid from "uuid";
@@ -59,12 +59,14 @@ export default class Add_ItemScreen extends Component {
 
             await dbRef.push(product, error => {
                 if (!error) {
-                    console.log("Done")
+
                 } else {
                     console.log(error)
                 }
             })
 
+        } else {
+            Alert.alert("All fields are required")
         }
 
         this.setState({ ...INITIAL_STATE });

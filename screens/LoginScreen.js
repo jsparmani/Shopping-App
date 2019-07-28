@@ -102,6 +102,7 @@ class LoginScreen extends Component {
                                     ref={"txtPassword"}
                                 />
                                 <View>
+                                    <Text style={{ fontSize: 25, color: "red" }}> {this.props.error} </Text>
                                     {this.renderButton()}
                                 </View>
                             </View>
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        height: 200,
+        height: 250,
         padding: 20,
         // backgroundColor: 'red'
     },
