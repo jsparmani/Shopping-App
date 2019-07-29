@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, Platform, StatusBar, ActivityIndicator, FlatList, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { Header, Title, Left, Icon, Right, Button, Body, Card } from "native-base";
+import { Header, Title, Left, Icon, Right, Button, Body, Card , Footer,FooterTab} from "native-base";
 import { connect } from "react-redux";
 import * as firebase from "firebase";
 import { Entypo } from "@expo/vector-icons";
@@ -201,9 +201,16 @@ class CartScreen extends Component {
                         />
                     </ScrollView>
                 </View>
-                <Button info block style={{ margin: 20, flex: 1 }}>
-                    <Text style={{ fontSize: 30, alignSelf: "center", color: "#FFFFFF" }}> Total:  {this.state.total} </Text>
-                </Button>
+                <Footer>
+                        <FooterTab>
+                            <Button full
+                                    onPress={()=>{this.props.navigation.navigate("Checkout",{
+                                        total: this.state.total})}}
+                            >
+                                <Text style={{ fontSize:15, color:'white'}}> Total : {this.state.total} </Text>
+                            </Button>
+                        </FooterTab>
+                    </Footer>
             </View>
         )
     }

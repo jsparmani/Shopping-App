@@ -9,7 +9,8 @@ import {
     ActivityIndicator,
     Image,
     StatusBar,
-    Dimensions
+    Dimensions,
+    Animated, PanResponder
 } from "react-native";
 import { Header, Title, Left, Icon, Right, Button, Body, Card, CardItem, Textarea } from "native-base";
 import { Entypo } from "@expo/vector-icons";
@@ -113,12 +114,21 @@ export default class ProductDescriptionScreen extends Component {
                         <View style={styles.contactIconContainer}>
                             <TouchableOpacity
                                 onLongPress={() => {
-                                    return (
-                                        <Lightbox
-                                            medium={this.state.imageUrl}
-                                            large={this.state.imageUrl}
-                                            onClose={this.closeLightbox}
-                                        />
+                                    return (<Animated.View style={[StyleSheet.absoluteFill, styles.modal]} pointerEvents="none">
+                                    <View style={styles.modalContainer}>
+                                      <View style={styles.header}>
+                                        <Text>Jason Brown</Text>
+                                      </View>
+                                      <Image source={picture} style={styles.image} resizeMode="cover" />
+                                      <View style={styles.footer}>
+                                        <View style={styles.footerContent}>
+                                          <Text style={styles.text}>Like</Text>
+                                          <Text style={styles.text}>Comment</Text>
+                                          <Text style={styles.text}>Share</Text>
+                                        </View>
+                                      </View>
+                                    </View>
+                                  </Animated.View>
                                     )
                                 }}
                             >
@@ -219,5 +229,43 @@ const styles = StyleSheet.create({
     actionText: {
         color: "#B83227",
         fontWeight: "900"
-    }
+    },
+    modal: {
+        alignItems: "center",
+        justifyContent: "center",
+      },
+      modalContainer: {
+        width: "90%",
+        height: "60%",
+      },
+      header: {
+        backgroundColor: "#FFF",
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
+        overflow: "hidden",
+        padding: 8,
+      },
+      footer: {
+        backgroundColor: "#FFF",
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+        overflow: "hidden",
+        padding: 8,
+      },
+      footerContent: {
+        justifyContent: "space-around",
+        flexDirection: "row",
+      },
+      image: {
+        width: "100%",
+        height: "100%",
+      },
+      text: {
+        flex: 1,
+        fontSize: 18,
+        textAlign: "center",
+      },
+      bold: {
+        fontWeight: "bold",
+      }
 });
