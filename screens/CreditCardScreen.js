@@ -3,8 +3,10 @@ import { Text, View, StyleSheet, Platform, StatusBar, UIManager } from 'react-na
 import { Header, Title, Left, Icon, Right, Button, Body, Footer, FooterTab } from "native-base";
 import { CreditCardInput } from "react-native-credit-card-input";
 import AnimatedLoader from 'react-native-animated-loader';
+import * as firebase from "firebase";
+import { connect } from "react-redux";
 
-export default class CreditCardScreen extends React.Component {
+class CreditCardScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,6 +21,23 @@ export default class CreditCardScreen extends React.Component {
                 <View style={styles.notch} />
             )
         }
+    }
+
+    setOrder = () => {
+
+        firebase
+            .database()
+            .ref(`cart/${this.props.uid}/products`)
+            .once("value", snapshot => {
+                if (snapshot.val()) {
+                    let order = snapshot.val()
+                    firebase
+                        .database()
+                        .ref(`orders/${this.props.uid}`)
+                        .push(order)
+                }
+            })
+
     }
 
     renderScreen = () => {
@@ -56,13 +75,14 @@ export default class CreditCardScreen extends React.Component {
                     <Footer>
                         <FooterTab>
                             <Button full
-                                onPress={() => { 
-                                    
+                                onPress={() => {
+                                    this.setOrder();
                                     setTimeout(() => {
                                         this.setState({ visible: false })
                                         this.props.navigation.navigate("Home")
                                     }, 3000)
-                                    this.setState({ visible: true }) }}
+                                    this.setState({ visible: true })
+                                }}
                             >
                                 <Text style={{ fontSize: 15, color: 'white' }}> Confirm </Text>
                             </Button>
@@ -104,3 +124,12 @@ const styles = StyleSheet.create({
         height: 100,
     }
 })
+
+const mapStateToProps = state => {
+    return {
+        uid: state.home.uid
+    }
+}
+
+
+export default connect(mapStateToProps)(CreditCardScreen)
