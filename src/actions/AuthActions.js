@@ -49,7 +49,7 @@ const loginUserSuccess = (dispatch, user, props) => {
         .database()
         .ref(`admin-users/${currentUser.uid}`)
         .on('value', snapshot => {
-            if(!snapshot.val()) {
+            if (!snapshot.val()) {
                 firebase
                     .database()
                     .ref(`normal-users/${currentUser.uid}`)
@@ -60,9 +60,28 @@ const loginUserSuccess = (dispatch, user, props) => {
         })
 
 
-        firebase
-            .database()
-            .ref(`admin-users/${currentUser.uid}`).off()
+
+
+    priceRef = firebase
+        .database()
+        .ref(`cart/${currentUser.uid}/price`)
+    priceRef
+        .on("value", snapshot => {
+            if (!snapshot.val()) {
+                firebase
+                    .database()
+                    .ref(`admin-users/${currentUser.uid}`)
+                    .on("value", dataSnapshot => {
+                        if (!dataSnapshot.val()) {
+                            priceRef.set(0)
+                        }
+                    })
+            }
+        })
+
+    firebase
+        .database()
+        .ref(`admin-users/${currentUser.uid}`).off()
 
     props.navigation.navigate("Home")
 

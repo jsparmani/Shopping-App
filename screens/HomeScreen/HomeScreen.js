@@ -120,15 +120,28 @@ class HomeScreen extends Component {
                 if (snapshot.val()) {
                     let product = snapshot.val()
                     let ref = firebase.database().ref(`cart/${this.props.uid}/products`).child(key)
+                    priceRef = firebase.database().ref(`cart/${this.props.uid}/price`)
                     ref.once('value', snapshot => {
                         if (snapshot.val()) {
                             let existingProduct = snapshot.val()
                             let q = existingProduct.quantity
                             existingProduct["quantity"] = q + 1
                             ref.update(existingProduct)
+                            priceRef
+                                .once("value", dataSnapshot => {
+                                    let oldPrice = parseFloat(String(dataSnapshot.val()).replace(/[^\d]/g, ''))
+                                    let extraAmount = parseFloat(String(existingProduct.price).replace(/[^\d]/g, ''))
+                                    priceRef.set(oldPrice+extraAmount);
+                                })
                         } else {
                             product["quantity"] = 1
                             ref.update(product)
+                            priceRef
+                                .once("value", dataSnapshot => {
+                                    let oldPrice = parseFloat(String(dataSnapshot.val()).replace(/[^\d]/g, ''))
+                                    let extraAmount = parseFloat(String(product.price).replace(/[^\d]/g, ''))
+                                    priceRef.set(oldPrice+extraAmount);
+                                })
                         }
                     })
 
@@ -137,6 +150,7 @@ class HomeScreen extends Component {
             })
 
         ref.off()
+
     }
 
     renderSelector = key => {

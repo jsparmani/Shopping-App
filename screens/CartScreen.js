@@ -13,12 +13,15 @@ class CartScreen extends Component {
             data: [],
             isLoading: true,
             isListEmpty: false,
+            total: 0
         };
     }
 
     componentWillMount() {
         this.getAllCartItems()
+
     }
+
 
     getAllCartItems = () => {
         let self = this;
@@ -26,9 +29,9 @@ class CartScreen extends Component {
         let cartRef = firebase
             .database()
             .ref(`/cart/${this.props.uid}/products`)
+        priceRef = firebase.database().ref(`cart/${this.props.uid}/price`)
         cartRef
             .on("value", dataSnapshot => {
-                console.log(dataSnapshot.val())
                 if (dataSnapshot.val()) {
                     let productResult = Object.values(dataSnapshot.val())
 
@@ -38,6 +41,10 @@ class CartScreen extends Component {
                         productResult[key]["key"] = value;
                     })
 
+                    priceRef
+                        .on("value", snapshot => {
+                            self.setState({ total: snapshot.val() })
+                        })
 
                     self.setState({ isListEmpty: false, data: productResult })
                 } else {
@@ -45,6 +52,7 @@ class CartScreen extends Component {
                 }
                 self.setState({ isLoading: false })
             })
+
     };
 
     renderNotch = () => {
@@ -55,26 +63,42 @@ class CartScreen extends Component {
         }
     }
 
+
     changeQuantity = key => {
+        let self = this
         ref = firebase.database().ref(`cart/${this.props.uid}/products/${key}`)
+        priceRef = firebase.database().ref(`cart/${this.props.uid}/price`)
         ref.once("value", snapshot => {
             if (snapshot.val()) {
                 let product = snapshot.val()
                 let q = product.quantity
                 if (q === 1) {
                     ref.remove()
+                    priceRef
+                        .once("value", dataSnapshot => {
+                            let oldPrice = parseFloat(String(dataSnapshot.val()).replace(/[^\d]/g, ''))
+                            let deductionAmount = parseFloat(String(product.price).replace(/[^\d]/g, ''))
+                            priceRef.set(oldPrice - deductionAmount);
+                        })
                 } else {
                     product["quantity"] = q - 1;
                     ref.update(product)
+                    priceRef
+                        .once("value", dataSnapshot => {
+                            let oldPrice = parseFloat(String(dataSnapshot.val()).replace(/[^\d]/g, ''))
+                            let deductionAmount = parseFloat(String(product.price).replace(/[^\d]/g, ''))
+                            priceRef.set(oldPrice - deductionAmount);
+                        })
                 }
                 ref.off()
+
             }
         })
-
 
     }
 
     render() {
+
 
         if (this.state.isLoading) {
             return (
@@ -138,7 +162,7 @@ class CartScreen extends Component {
                         <Right />
                     </Header>
                 </View>
-                <View style={{ flex: 9 }}>
+                <View style={{ flex: 8 }}>
                     <ScrollView>
                         <FlatList
                             data={this.state.data}
@@ -177,6 +201,9 @@ class CartScreen extends Component {
                         />
                     </ScrollView>
                 </View>
+                <Button info block style={{ margin: 20, flex: 1 }}>
+                    <Text style={{ fontSize: 30, alignSelf: "center", color: "#FFFFFF" }}> Total:  {this.state.total} </Text>
+                </Button>
             </View>
         )
     }
