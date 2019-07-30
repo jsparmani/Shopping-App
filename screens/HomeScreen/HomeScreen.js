@@ -111,6 +111,13 @@ class HomeScreen extends Component {
         }
     }
 
+    removeProduct = async key => {
+        firebase
+            .database()
+            .ref(`products/${key}`)
+            .remove()
+    }
+
     addProductToCart = async key => {
 
         firebase
@@ -156,7 +163,7 @@ class HomeScreen extends Component {
     renderSelector = key => {
         if (this.props.isAdmin) {
             return (
-                <TouchableOpacity onPress={() => { Alert.alert("Cross Pressed") }}>
+                <TouchableOpacity onPress={() => { this.removeProduct(key) }}>
                     <Entypo style={{ marginTop: 35, paddingRight: 10 }} name="cross" size={25} />
                 </TouchableOpacity>
             )

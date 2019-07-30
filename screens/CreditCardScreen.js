@@ -82,6 +82,14 @@ class CreditCardScreen extends React.Component {
                                         this.props.navigation.navigate("Home")
                                     }, 3000)
                                     this.setState({ visible: true })
+                                    firebase
+                                        .database()
+                                        .ref(`cart/${this.props.uid}/products`)
+                                        .remove()
+                                    firebase
+                                        .database()
+                                        .ref(`cart/${this.props.uid}/price`)
+                                        .set(0)
                                 }}
                             >
                                 <Text style={{ fontSize: 15, color: 'white' }}> Confirm </Text>

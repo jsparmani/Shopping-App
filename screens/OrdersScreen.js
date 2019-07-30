@@ -38,7 +38,7 @@ class OrdersScreen extends Component {
                         ordersResult[key]["key"] = value;
                     })
 
-                    self.setState({ isListEmpty: false, data: ordersResult })
+                    self.setState({ isListEmpty: false, data: ordersResult.reverse() })
                 } else {
                     self.setState({ isListEmpty: true })
                 }
@@ -127,10 +127,11 @@ class OrdersScreen extends Component {
                                 let products = Object.values(item)
                                 products.pop()
                                 return (
-                                    <Card style={styles.listItem}>
+                                    <Card>
+                                        <Text style={{ fontSize: 20, alignSelf:"center", color: "#035eb5" }}> Order Id: {item.key} </Text>
                                         {products.map((itemChild) => {
                                             return (
-                                                <View>
+                                                <View style={styles.listItem}>
                                                     <View>
                                                         <Image
                                                             style={styles.contactIcon}
@@ -146,6 +147,7 @@ class OrdersScreen extends Component {
                                                             {itemChild.name}
                                                         </Text>
                                                         <Text style={styles.infoText}>{itemChild.price}</Text>
+                                                        <Text style={styles.infoText}>{itemChild.quantity}</Text>
                                                     </View>
 
                                                 </View>

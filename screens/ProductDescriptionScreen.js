@@ -12,12 +12,13 @@ import {
     Dimensions,
     Animated, PanResponder
 } from "react-native";
-import { Header, Title, Left, Icon, Right, Button, Body, Card, CardItem, Textarea } from "native-base";
+import { Header, Title, Left, Icon, Right, Button, Body, Card, CardItem, Textarea, Footer, FooterTab } from "native-base";
 import { Entypo } from "@expo/vector-icons";
 import * as firebase from "firebase";
 import { Lightbox } from "react-modal-image";
+import { connect } from "react-redux";
 
-export default class ProductDescriptionScreen extends Component {
+class ProductDescriptionScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -58,6 +59,27 @@ export default class ProductDescriptionScreen extends Component {
                     });
                 }
             })
+    }
+
+    renderFooter = () => {
+
+        if (this.props.isAdmin) {
+            return (
+                <Footer>
+                    <FooterTab>
+                        <Button full
+                            onPress={() => {
+                                this.props.navigation.navigate("EditProduct", {
+                                    key: this.state.key
+                                })
+                            }}
+                        >
+                            <Text style={{ fontSize: 15, color: 'white' }}> Edit </Text>
+                        </Button>
+                    </FooterTab>
+                </Footer>
+            )
+        }
     }
 
     renderNotch = () => {
@@ -115,20 +137,20 @@ export default class ProductDescriptionScreen extends Component {
                             <TouchableOpacity
                                 onLongPress={() => {
                                     return (<Animated.View style={[StyleSheet.absoluteFill, styles.modal]} pointerEvents="none">
-                                    <View style={styles.modalContainer}>
-                                      <View style={styles.header}>
-                                        <Text>Jason Brown</Text>
-                                      </View>
-                                      <Image source={picture} style={styles.image} resizeMode="cover" />
-                                      <View style={styles.footer}>
-                                        <View style={styles.footerContent}>
-                                          <Text style={styles.text}>Like</Text>
-                                          <Text style={styles.text}>Comment</Text>
-                                          <Text style={styles.text}>Share</Text>
+                                        <View style={styles.modalContainer}>
+                                            <View style={styles.header}>
+                                                <Text>Jason Brown</Text>
+                                            </View>
+                                            <Image source={picture} style={styles.image} resizeMode="cover" />
+                                            <View style={styles.footer}>
+                                                <View style={styles.footerContent}>
+                                                    <Text style={styles.text}>Like</Text>
+                                                    <Text style={styles.text}>Comment</Text>
+                                                    <Text style={styles.text}>Share</Text>
+                                                </View>
+                                            </View>
                                         </View>
-                                      </View>
-                                    </View>
-                                  </Animated.View>
+                                    </Animated.View>
                                     )
                                 }}
                             >
@@ -176,6 +198,7 @@ export default class ProductDescriptionScreen extends Component {
                         </View>
                     </ScrollView>
                 </View>
+                {this.renderFooter()}
             </View>
         )
     }
@@ -233,39 +256,47 @@ const styles = StyleSheet.create({
     modal: {
         alignItems: "center",
         justifyContent: "center",
-      },
-      modalContainer: {
+    },
+    modalContainer: {
         width: "90%",
         height: "60%",
-      },
-      header: {
+    },
+    header: {
         backgroundColor: "#FFF",
         borderTopLeftRadius: 4,
         borderTopRightRadius: 4,
         overflow: "hidden",
         padding: 8,
-      },
-      footer: {
+    },
+    footer: {
         backgroundColor: "#FFF",
         borderBottomLeftRadius: 4,
         borderBottomRightRadius: 4,
         overflow: "hidden",
         padding: 8,
-      },
-      footerContent: {
+    },
+    footerContent: {
         justifyContent: "space-around",
         flexDirection: "row",
-      },
-      image: {
+    },
+    image: {
         width: "100%",
         height: "100%",
-      },
-      text: {
+    },
+    text: {
         flex: 1,
         fontSize: 18,
         textAlign: "center",
-      },
-      bold: {
+    },
+    bold: {
         fontWeight: "bold",
-      }
+    }
 });
+
+const mapStateToProps = state => {
+    return {
+        isAdmin: state.home.isAdmin
+    }
+}
+
+export default connect(mapStateToProps)(ProductDescriptionScreen)

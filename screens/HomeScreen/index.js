@@ -10,12 +10,14 @@ import { createDrawerNavigator, createAppContainer, createStackNavigator } from 
 import CartScreen from "../CartScreen.js";
 import ProductDescriptionScreen from "../ProductDescriptionScreen.js";
 import CreditCardScreen from "../CreditCardScreen.js";
+import EditProductScreen from "../EditProductScreen.js";
 
 const HomeStack = createStackNavigator(
     {
         Home: { screen: HomeScreen },
         Cart: { screen: CartScreen },
         Description: { screen: ProductDescriptionScreen },
+        EditProduct: { screen: EditProductScreen },
         Checkout: { screen: CheckoutScreen},
         CreditCard: {screen: CreditCardScreen}
     },
