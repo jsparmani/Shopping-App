@@ -79,8 +79,8 @@ class OrdersScreen extends Component {
                         <Left>
                             <Button
                                 transparent
-                                onPress={() => this.props.navigation.goBack()}>
-                                <Icon name="arrow-back" />
+                                onPress={() => this.props.navigation.openDrawer()}>
+                                <Icon name="menu" />
                             </Button>
                         </Left>
                         <Body>
@@ -108,8 +108,8 @@ class OrdersScreen extends Component {
                         <Left>
                             <Button
                                 transparent
-                                onPress={() => this.props.navigation.goBack()}>
-                                <Icon name="arrow-back" />
+                                onPress={() => this.props.navigation.openDrawer()}>
+                                <Icon name="menu" />
                             </Button>
                         </Left>
                         <Body>
