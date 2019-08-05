@@ -15,6 +15,7 @@ class HomeScreen extends Component {
             arrayHolder: [],
             isLoading: true,
             isListEmpty: false,
+            badge: 0
         };
     }
 
@@ -29,6 +30,9 @@ class HomeScreen extends Component {
         let productRef = firebase
             .database()
             .ref('/products')
+        badgeRef = firebase
+            .database()
+            .ref(`cart/${this.props.uid}/badge`)
         productRef
             .on("value", dataSnapshot => {
                 if (dataSnapshot.val()) {
@@ -42,6 +46,8 @@ class HomeScreen extends Component {
 
 
                     self.setState({ isListEmpty: false, data: productResult, arrayHolder: productResult })
+
+
                 } else {
                     self.setState({ isListEmpty: true })
                 }
@@ -56,6 +62,7 @@ class HomeScreen extends Component {
             )
         }
     }
+
 
     searchFilterFunction = text => {
 
@@ -111,12 +118,29 @@ class HomeScreen extends Component {
         }
     }
 
-    removeProduct = async key => {
-        firebase
-            .database()
-            .ref(`products/${key}`)
-            .remove()
-    }
+    removeProduct = item => {
+        Alert.alert(
+            "Delete Product",
+            `${item.name}`,
+            [
+                {
+                    text: "Cancel", onPress: () => console.log(
+                        "Cancelled Press"
+                    )
+                },
+                {
+                    text: "OK", onPress: async () => {
+                        let productRef = firebase
+                            .database()
+                            .ref('/products')
+                            .child(item.key);
+                        await productRef.remove()
+                    }
+                }
+            ],
+            { cancelable: false }
+        )
+    };
 
     addProductToCart = async key => {
 
@@ -127,7 +151,8 @@ class HomeScreen extends Component {
                 if (snapshot.val()) {
                     let product = snapshot.val()
                     let ref = firebase.database().ref(`cart/${this.props.uid}/products`).child(key)
-                    priceRef = firebase.database().ref(`cart/${this.props.uid}/price`)
+                    let priceRef = firebase.database().ref(`cart/${this.props.uid}/price`)
+                    let badgeRef = firebase.database().ref(`cart/${this.props.uid}/badge`)
                     ref.once('value', snapshot => {
                         if (snapshot.val()) {
                             let existingProduct = snapshot.val()
@@ -138,7 +163,7 @@ class HomeScreen extends Component {
                                 .once("value", dataSnapshot => {
                                     let oldPrice = parseFloat(String(dataSnapshot.val()).replace(/[^\d]/g, ''))
                                     let extraAmount = parseFloat(String(existingProduct.price).replace(/[^\d]/g, ''))
-                                    priceRef.set(oldPrice+extraAmount);
+                                    priceRef.set(oldPrice + extraAmount);
                                 })
                         } else {
                             product["quantity"] = 1
@@ -147,7 +172,17 @@ class HomeScreen extends Component {
                                 .once("value", dataSnapshot => {
                                     let oldPrice = parseFloat(String(dataSnapshot.val()).replace(/[^\d]/g, ''))
                                     let extraAmount = parseFloat(String(product.price).replace(/[^\d]/g, ''))
-                                    priceRef.set(oldPrice+extraAmount);
+                                    priceRef.set(oldPrice + extraAmount);
+                                })
+                            badgeRef
+                                .once("value", snapshot => {
+
+                                    if (snapshot.val()) {
+                                        let count = snapshot.val()
+                                        badgeRef.set(count + 1)
+                                    } else {
+                                        badgeRef.set(1)
+                                    }
                                 })
                         }
                     })
@@ -160,16 +195,16 @@ class HomeScreen extends Component {
 
     }
 
-    renderSelector = key => {
+    renderSelector = item => {
         if (this.props.isAdmin) {
             return (
-                <TouchableOpacity onPress={() => { this.removeProduct(key) }}>
+                <TouchableOpacity onPress={() => { this.removeProduct(item) }}>
                     <Entypo style={{ marginTop: 35, paddingRight: 10 }} name="cross" size={25} />
                 </TouchableOpacity>
             )
         } else {
             return (
-                <TouchableOpacity onPress={() => { this.addProductToCart(key) }}>
+                <TouchableOpacity onPress={() => { this.addProductToCart(item.key) }}>
                     <Entypo style={{ marginTop: 35, paddingRight: 10 }} name="plus" size={25} />
                 </TouchableOpacity>
 
@@ -273,7 +308,7 @@ class HomeScreen extends Component {
                                                 <Text style={styles.infoText}>{item.price}</Text>
                                             </View>
                                             <View style={styles.entypoContainer}>
-                                                {this.renderSelector(item.key)}
+                                                {this.renderSelector(item)}
                                             </View>
                                         </Card>
                                     </TouchableOpacity>
@@ -292,7 +327,7 @@ const mapStateToProps = state => {
     return {
         searchText: state.home.text,
         isAdmin: state.home.isAdmin,
-        uid: state.home.uid
+        uid: state.home.uid,
     }
 }
 

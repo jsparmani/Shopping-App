@@ -11,6 +11,7 @@ import CartScreen from "../CartScreen.js";
 import ProductDescriptionScreen from "../ProductDescriptionScreen.js";
 import CreditCardScreen from "../CreditCardScreen.js";
 import EditProductScreen from "../EditProductScreen.js";
+import PaytmScreen from "../PaytmScreen.js";
 
 const HomeStack = createStackNavigator(
     {
@@ -19,7 +20,8 @@ const HomeStack = createStackNavigator(
         Description: { screen: ProductDescriptionScreen },
         EditProduct: { screen: EditProductScreen },
         Checkout: { screen: CheckoutScreen},
-        CreditCard: {screen: CreditCardScreen}
+        CreditCard: {screen: CreditCardScreen},
+        Paytm: { screen: PaytmScreen }
     },
     {
         headerMode: "none"

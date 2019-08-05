@@ -3,19 +3,16 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity,
     ScrollView,
     Platform,
     ActivityIndicator,
     Image,
     StatusBar,
     Dimensions,
-    Animated, PanResponder
 } from "react-native";
 import { Header, Title, Left, Icon, Right, Button, Body, Card, CardItem, Textarea, Footer, FooterTab } from "native-base";
 import { Entypo } from "@expo/vector-icons";
 import * as firebase from "firebase";
-import { Lightbox } from "react-modal-image";
 import { connect } from "react-redux";
 
 class ProductDescriptionScreen extends Component {
@@ -29,12 +26,7 @@ class ProductDescriptionScreen extends Component {
             price: "",
             imageUrl: "",
             key: null,
-            open: true
         }
-    }
-
-    closeLightbox = () => {
-        this.setState({ open: false })
     }
 
     componentWillMount() {
@@ -134,37 +126,18 @@ class ProductDescriptionScreen extends Component {
                 <View style={{ flex: 9 }}>
                     <ScrollView style={styles.container}>
                         <View style={styles.contactIconContainer}>
-                            <TouchableOpacity
-                                onLongPress={() => {
-                                    return (<Animated.View style={[StyleSheet.absoluteFill, styles.modal]} pointerEvents="none">
-                                        <View style={styles.modalContainer}>
-                                            <View style={styles.header}>
-                                                <Text>Jason Brown</Text>
-                                            </View>
-                                            <Image source={picture} style={styles.image} resizeMode="cover" />
-                                            <View style={styles.footer}>
-                                                <View style={styles.footerContent}>
-                                                    <Text style={styles.text}>Like</Text>
-                                                    <Text style={styles.text}>Comment</Text>
-                                                    <Text style={styles.text}>Share</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </Animated.View>
-                                    )
-                                }}
-                            >
-                                <Image
-                                    style={styles.contactIcon}
-                                    source={
-                                        this.state.imageUrl === "empty"
-                                            ? require("../assets/person.png")
-                                            : {
-                                                uri: this.state.imageUrl
-                                            }
-                                    }
-                                />
-                            </TouchableOpacity>
+
+                            <Image
+                                style={styles.contactIcon}
+                                source={
+                                    this.state.imageUrl === "empty"
+                                        ? require("../assets/person.png")
+                                        : {
+                                            uri: this.state.imageUrl
+                                        }
+                                }
+                            />
+
                             <View style={styles.nameContainer}>
                                 <Text style={styles.name}>
                                     {this.state.name}

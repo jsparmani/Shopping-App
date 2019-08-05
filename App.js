@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Alert } from "react-native";
 import Expo, { AppLoading, Font } from "expo";
 import HomeScreen from "./screens/HomeScreen/index";
 import { Provider } from "react-redux";
@@ -24,6 +25,8 @@ export default class App extends Component {
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
     }
+
+    
 
     constructor() {
         super();

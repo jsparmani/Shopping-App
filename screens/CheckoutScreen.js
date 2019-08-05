@@ -60,7 +60,7 @@ export default class CheckoutScreen extends Component {
                             </CardItem>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={()=> this.props.navigation.navigate('CreditCard')}
+                            onPress={() => this.props.navigation.navigate('CreditCard')}
                         >
                             <CardItem  >
                                 <Icon active name="md-card" />
@@ -70,7 +70,9 @@ export default class CheckoutScreen extends Component {
                                 </Right>
                             </CardItem>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { this.props.navigation.navigate("Paytm", { total: this.state.total }) }}
+                        >
                             <CardItem >
                                 <Foundation name="paypal" size={26} />
                                 <Text>    Paytm </Text>

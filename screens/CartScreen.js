@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, Platform, StatusBar, ActivityIndicator, FlatList, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { Header, Title, Left, Icon, Right, Button, Body, Card , Footer,FooterTab} from "native-base";
+import { Header, Title, Left, Icon, Right, Button, Body, Card, Footer, FooterTab } from "native-base";
 import { connect } from "react-redux";
 import * as firebase from "firebase";
 import { Entypo } from "@expo/vector-icons";
@@ -80,6 +80,13 @@ class CartScreen extends Component {
                             let deductionAmount = parseFloat(String(product.price).replace(/[^\d]/g, ''))
                             priceRef.set(oldPrice - deductionAmount);
                         })
+                    let badgeRef = firebase.database().ref(`cart/${this.props.uid}/badge`)
+                    badgeRef.once("value", snapshot => {
+                        if (snapshot.val()) {
+                            let count = snapshot.val()
+                            badgeRef.set(count - 1);
+                        }
+                    })
                 } else {
                     product["quantity"] = q - 1;
                     ref.update(product)
@@ -202,15 +209,18 @@ class CartScreen extends Component {
                     </ScrollView>
                 </View>
                 <Footer>
-                        <FooterTab>
-                            <Button full
-                                    onPress={()=>{this.props.navigation.navigate("Checkout",{
-                                        total: this.state.total})}}
-                            >
-                                <Text style={{ fontSize:15, color:'white'}}> Total : {this.state.total} </Text>
-                            </Button>
-                        </FooterTab>
-                    </Footer>
+                    <FooterTab>
+                        <Button full
+                            onPress={() => {
+                                this.props.navigation.navigate("Checkout", {
+                                    total: this.state.total
+                                })
+                            }}
+                        >
+                            <Text style={{ fontSize: 15, color: 'white' }}> Total : {this.state.total} </Text>
+                        </Button>
+                    </FooterTab>
+                </Footer>
             </View>
         )
     }

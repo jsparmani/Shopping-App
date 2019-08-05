@@ -38,6 +38,15 @@ class CreditCardScreen extends React.Component {
                 }
             })
 
+        firebase
+            .database()
+            .ref(`cart/${this.props.uid}/products`)
+            .remove()
+        firebase
+            .database()
+            .ref(`cart/${this.props.uid}/price`)
+            .set(0)
+
     }
 
     renderScreen = () => {

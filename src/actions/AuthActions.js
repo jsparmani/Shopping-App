@@ -79,6 +79,24 @@ const loginUserSuccess = (dispatch, user, props) => {
             }
         })
 
+
+    badgeRef = firebase
+        .database()
+        .ref(`cart/${currentUser.uid}/badge`)
+    badgeRef
+        .on("value", snapshot => {
+            if (!snapshot.val()) {
+                firebase
+                    .database()
+                    .ref(`admin-users/${currentUser.uid}`)
+                    .on("value", dataSnapshot => {
+                        if (!dataSnapshot.val()) {
+                            badgeRef.set(0)
+                        }
+                    })
+            }
+        })
+
     firebase
         .database()
         .ref(`admin-users/${currentUser.uid}`).off()

@@ -86,7 +86,7 @@ class LoginScreen extends Component {
                         <View style={styles.logoContainer}>
                             <View style={styles.logoContainer}>
                                 <Image style={styles.logo}
-                                    source={require('../assets/login_screen_image.png')}>
+                                    source={require('../assets/icon.png')}>
                                 </Image>
                                 <Text style={styles.title}>Account Information</Text>
                             </View>
@@ -139,8 +139,8 @@ const styles = StyleSheet.create({
         flex: 1
     },
     logo: {
-        width: 128,
-        height: 56,
+        width: 100,
+        height: 100,
     },
     title: {
         color: '#f7c744',
